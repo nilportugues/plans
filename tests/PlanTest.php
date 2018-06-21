@@ -71,6 +71,16 @@ class PlanTest extends TestCase {
         $this->assertEquals($this->user->subscriptions->count(), 2);
     }
 
+    public function testExtendWithWrongDuration()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $this->assertFalse($subscription->extendWith(-1));
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+    }
+
     public function testExtendNow()
     {
         $subscription = $this->user->subscribeTo($this->plan, 15);
@@ -92,6 +102,107 @@ class PlanTest extends TestCase {
         $this->assertEquals($subscription->plan_id, $this->plan->id);
         $this->assertEquals($subscription->remainingDays(), 14);
         $this->assertEquals($this->user->subscriptions->count(), 2);
+    }
+
+    public function testUpgradeFromUserWithoutActiveSubscription()
+    {
+        $subscription = $this->user->upgradeTo($this->newPlan, 15, true);
+        sleep(1);
+
+        $this->assertEquals($subscription->plan_id, $this->newPlan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+    }
+
+    public function testUpgradeToFromUserNow()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $subscription = $this->user->upgradeTo($this->newPlan, 15, true);
+
+        $this->assertEquals($subscription->plan_id, $this->newPlan->id);
+        $this->assertEquals($subscription->remainingDays(), 29);
+    }
+
+    public function testUpgradeToFromUserToAnotherCycle()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $this->user->upgradeTo($this->newPlan, 30, false);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+        $this->assertEquals($this->user->subscriptions->count(), 2);
+    }
+
+    public function testExtendFromUserWithoutActiveSubscription()
+    {
+        $subscription = $this->user->extendCurrentSubscriptionWith(15, true);
+        sleep(1);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+    }
+
+    public function testExtendFromUserNow()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $subscription = $this->user->extendCurrentSubscriptionWith(15, true);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 29);
+    }
+
+    public function testExtendFromUserToAnotherCycle()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $this->user->extendCurrentSubscriptionWith(15, false);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+        $this->assertEquals($this->user->subscriptions->count(), 2);
+    }
+
+    public function testCancelSubscription()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+
+        $subscription = $subscription->cancel();
+
+        $this->assertNotNull($subscription);
+        $this->assertTrue($subscription->isCancelled());
+        $this->assertTrue($subscription->isPendingCancellation());
+        $this->assertFalse($subscription->cancel());
+    }
+
+    public function testCancelSubscriptionFromUser()
+    {
+        $subscription = $this->user->subscribeTo($this->plan, 15);
+        sleep(1);
+
+        $this->assertEquals($subscription->plan_id, $this->plan->id);
+        $this->assertEquals($subscription->remainingDays(), 14);
+
+        $subscription = $this->user->cancelCurrentSubscription();
+
+        $this->assertNotNull($subscription);
+        $this->assertTrue($subscription->isCancelled());
+        $this->assertTrue($subscription->isPendingCancellation());
+        $this->assertFalse($subscription->cancel());
+    }
+
+    public function testCancelSubscriptionWithoutSubscription()
+    {
+        $this->assertFalse($this->user->cancelCurrentSubscription());
     }
 
 }

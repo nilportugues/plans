@@ -20,9 +20,4 @@ class PlanModel extends Model
     {
         return $this->hasMany(config('plans.models.subscription'), 'plan_id');
     }
-
-    public function activeSubscriptions()
-    {
-        //
-    }
 }

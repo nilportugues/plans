@@ -68,12 +68,20 @@ trait HasPlans {
         return $this->activeSubscription()->upgradeTo($newPlan, $duration, $startFromNow);
     }
 
-    public function extendCurrentSubscriptionWith($duration = 30, $startFromNow = false)
+    public function extendCurrentSubscriptionWith($duration = 30, $startFromNow = true)
     {
         if(!$this->hasActiveSubscription())
-            return $this->subscribeTo($this->lastActiveSubscription()->plan()->first(), $duration);
+            return $this->subscribeTo(($this->hasSubscriptions()) ? $this->lastActiveSubscription()->plan()->first() : config('plans.models.plan')::first(), $duration);
 
         return $this->activeSubscription()->extendWith($duration, $startFromNow);
+    }
+
+    public function cancelCurrentSubscription()
+    {
+        if(!$this->hasActiveSubscription())
+            return false;
+
+        return $this->activeSubscription()->cancel();
     }
 
 }

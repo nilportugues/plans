@@ -34,9 +34,11 @@ class PlanSubscriptionModel extends Model
         if($this->isCancelled() || $this->isPendingCancellation())
             return false;
 
-        return $this->update([
+        $this->update([
             'cancelled_on' => Carbon::now(),
         ]);
+
+        return $this;
     }
 
     public function extendWith($duration = 30, $startFromNow = true)
@@ -81,7 +83,7 @@ class PlanSubscriptionModel extends Model
 
     public function hasStarted()
     {
-        return (bool) Carbon::now()->lessThanOrEqualTo(Carbon::parse($this->starts_on));
+        return (bool) Carbon::now()->greaterThanOrEqualTo(Carbon::parse($this->starts_on));
     }
 
     public function hasExpired()
@@ -104,7 +106,7 @@ class PlanSubscriptionModel extends Model
 
     public function isCancelled()
     {
-        return (bool) $this->cancel_on != null;
+        return (bool) $this->cancelled_on != null;
     }
 
     public function isPendingCancellation()
