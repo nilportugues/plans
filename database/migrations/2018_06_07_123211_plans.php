@@ -38,7 +38,6 @@ class Plans extends Migration
 
             $table->enum('type', ['feature', 'limit'])->default('feature');
             $table->integer('limit')->default(0);
-            $table->integer('used')->default(0);
 
             $table->timestamps();
 
@@ -59,6 +58,18 @@ class Plans extends Migration
             $table->timestamps();
 
         });
+
+        Schema::create('plans_usages', function(Blueprint $table) {
+
+            $table->increments('id');
+            $table->integer('subscription_id');
+
+            $table->string('code');
+            $table->integer('used')->default(0);
+
+            $table->timestamps();
+
+        });
     }
 
     /**
@@ -71,5 +82,6 @@ class Plans extends Migration
         Schema::dropIfExists('plans');
         Schema::dropIfExists('plans_features');
         Schema::dropIfExists('plans_subscriptions');
+        Schema::dropIfExists('plans_usages');
     }
 }

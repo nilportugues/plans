@@ -11,6 +11,7 @@ return [
         'plan' => \Rennokki\Plans\Models\PlanModel::class,
         'subscription' => \Rennokki\Plans\Models\SubscriptionModel::class,
         'features' => \Rennokki\Plans\Models\FeatureModel::class,
+        'usage' => \Rennokki\Plans\Models\PlanSubscriptionUsageModel::class,
 
     ],
 

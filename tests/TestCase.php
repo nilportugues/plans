@@ -8,6 +8,7 @@ use Rennokki\Plans\Test\Models\User;
 use Rennokki\Plans\Models\PlanFeatureModel;
 use Rennokki\Plans\Models\PlanModel;
 use Rennokki\Plans\Models\PlanSubscriptionModel;
+use Rennokki\Plans\Models\PlanSubscriptionUsageModel;
 
 abstract class TestCase extends Orchestra
 {
@@ -44,6 +45,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('plans.models.plan', PlanModel::class);
         $app['config']->set('plans.models.feature', PlanFeatureModel::class);
         $app['config']->set('plans.models.subscription', PlanSubscriptionModel::class);
+        $app['config']->set('plans.models.usage', PlanSubscriptionUsageModel::class);
     }
 
     protected function resetDatabase()

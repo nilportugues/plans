@@ -4,16 +4,14 @@ namespace Rennokki\Plans\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-class NewSubscription
+class UpgradeSubscription
 {
     use SerializesModels;
 
     public $subscription;
-    public $duration;
 
-    public function __construct($subscription, $duration)
+    public function __construct($subscription)
     {
         $this->subscription = $subscription;
-        $this->duration = $duration;
     }
 }

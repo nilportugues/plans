@@ -45,19 +45,23 @@ trait HasPlans {
         return (bool) $this->activeSubscription();
     }
 
-    public function subscribeTo($plan, $duration = 30, $startFromNow = true)
+    public function subscribeTo($plan, $duration = 30)
     {
         $subscriptionModel = config('plans.models.subscription');
 
         if($duration < 1 || $this->hasActiveSubscription())
             return false;
 
-        return $this->subscriptions()->save(new $subscriptionModel([
+        $subscription = $this->subscriptions()->save(new $subscriptionModel([
             'plan_id' => $plan->id,
             'starts_on' => Carbon::now(),
             'expires_on' => Carbon::now()->addDays($duration),
             'cancelled_on' => null,
         ]));
+
+        event(new \Rennokki\Plans\Events\NewSubscription($subscription, $duration));
+
+        return $subscription;
     }
 
     public function upgradeTo($newPlan, $duration = 30, $startFromNow = true)

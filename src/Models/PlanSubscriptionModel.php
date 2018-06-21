@@ -29,6 +29,16 @@ class PlanSubscriptionModel extends Model
         return $this->belongsTo(config('plans.models.plan'), 'plan_id');
     }
 
+    public function features()
+    {
+        return $this->plan()->first()->features();
+    }
+
+    public function usages()
+    {
+        return $this->hasMany(config('plans.models.usage'), 'subscription_id');
+    }
+
     public function cancel()
     {
         if($this->isCancelled() || $this->isPendingCancellation())
@@ -37,6 +47,8 @@ class PlanSubscriptionModel extends Model
         $this->update([
             'cancelled_on' => Carbon::now(),
         ]);
+
+        event(new \Rennokki\Plans\Events\CancelSubscription($this));
 
         return $this;
     }
@@ -52,10 +64,12 @@ class PlanSubscriptionModel extends Model
                 'expires_on' => Carbon::parse($this->expires_on)->addDays($duration),
             ]);
 
+            event(new \Rennokki\Plans\Events\ExtendSubscription($this, $duration, $startFromNow));
+
             return $this;
         }
 
-        return Self::create([
+        $subscription = Self::create([
             'plan_id' => $this->id,
             'model_id' => $this->model_id,
             'model_type' => $this->model_type,
@@ -63,6 +77,10 @@ class PlanSubscriptionModel extends Model
             'expires_on' => Carbon::parse($this->expires_on)->addDays($duration),
             'cancelled_on' => null,
         ]);
+
+        event(new \Rennokki\Plans\Events\ExtendSubscription($subscription, $duration, $startFromNow));
+
+        return $subscription;
     }
 
     public function upgradeTo($newPlan, $duration = 30, $startFromNow = true)
@@ -77,6 +95,8 @@ class PlanSubscriptionModel extends Model
 
             $subscription = $this;
         }
+
+        event(new \Rennokki\Plans\Events\UpgradeSubscription($subscription, $duration, $startFromNow));
 
         return $subscription;
     }
@@ -112,5 +132,39 @@ class PlanSubscriptionModel extends Model
     public function isPendingCancellation()
     {
         return (bool) ($this->isCancelled() && $this->isActive());
+    }
+
+    public function consumeFeature($featureCode, $amount)
+    {
+        $usageModel = config('plans.models.usage');
+
+        $usage = $this->usages()->where('code', $featureCode)->first();
+        $feature = $this->features()->where('code', $featureCode)->first();
+
+        if($feature && !$usage)
+            if($feature->type == 'limit')
+            {
+                $newUsage = $this->usages()->save(new $usageModel([
+                    'code' => $featureCode,
+                    'used' => 0,
+                ]));
+
+                if($newUsage->used + $amount > $feature->limit)
+                    return false;
+
+                return $newUsage->update([
+                    'used' => (int) ($newUsage->used + $amount),
+                ]);
+            }
+
+        if(!$feature)
+            return false;
+
+        if($feature->type != 'limit' || $usage->used + $amount > $feature->limit)
+            return false;
+
+        return $usage->update([
+            'used' => (int) ($usage->used + $amount),
+        ]);
     }
 }
