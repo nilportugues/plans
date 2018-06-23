@@ -41,8 +41,9 @@ class PlanSubscriptionModel extends Model
 
     public function cancel()
     {
-        if ($this->isCancelled() || $this->isPendingCancellation())
-            return false;
+        if ($this->isCancelled() || $this->isPendingCancellation()) {
+                    return false;
+        }
 
         $this->update([
             'cancelled_on' => Carbon::now(),
@@ -55,8 +56,9 @@ class PlanSubscriptionModel extends Model
 
     public function extendWith($duration = 30, $startFromNow = true)
     {
-        if ($duration < 1)
-            return false;
+        if ($duration < 1) {
+                    return false;
+        }
 
         if ($startFromNow)
         {
@@ -118,8 +120,9 @@ class PlanSubscriptionModel extends Model
 
     public function remainingDays()
     {
-        if ($this->hasExpired())
-            return (int) 0;
+        if ($this->hasExpired()) {
+                    return (int) 0;
+        }
 
         return (int) Carbon::now()->diffInDays(Carbon::parse($this->expires_on));
     }
@@ -141,27 +144,31 @@ class PlanSubscriptionModel extends Model
         $usage = $this->usages()->where('code', $featureCode)->first();
         $feature = $this->features()->where('code', $featureCode)->first();
 
-        if ($feature && !$usage)
-            if ($feature->type == 'limit')
+        if ($feature && !$usage) {
+                    if ($feature->type == 'limit')
             {
                 $newUsage = $this->usages()->save(new $usageModel([
                     'code' => $featureCode,
                     'used' => 0,
                 ]));
+        }
 
-                if ($newUsage->used + $amount > $feature->limit)
-                    return false;
+                if ($newUsage->used + $amount > $feature->limit) {
+                                    return false;
+                }
 
                 return $newUsage->update([
                     'used' => (int) ($newUsage->used + $amount),
                 ]);
             }
 
-        if (!$feature)
-            return false;
+        if (!$feature) {
+                    return false;
+        }
 
-        if ($feature->type != 'limit' || $usage->used + $amount > $feature->limit)
-            return false;
+        if ($feature->type != 'limit' || $usage->used + $amount > $feature->limit) {
+                    return false;
+        }
 
         return $usage->update([
             'used' => (int) ($usage->used + $amount),
