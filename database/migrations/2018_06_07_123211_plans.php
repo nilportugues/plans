@@ -13,8 +13,7 @@ class Plans extends Migration
      */
     public function up()
     {
-        Schema::create('plans', function(Blueprint $table) {
-
+        Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('name');
@@ -24,11 +23,9 @@ class Plans extends Migration
             $table->integer('duration')->default(30);
 
             $table->timestamps();
-
         });
 
-        Schema::create('plans_features', function(Blueprint $table) {
-
+        Schema::create('plans_features', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('plan_id');
 
@@ -40,11 +37,9 @@ class Plans extends Migration
             $table->integer('limit')->default(0);
 
             $table->timestamps();
-
         });
 
-        Schema::create('plans_subscriptions', function(Blueprint $table) {
-
+        Schema::create('plans_subscriptions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('plan_id');
 
@@ -56,11 +51,9 @@ class Plans extends Migration
             $table->timestamp('cancelled_on')->nullable();
 
             $table->timestamps();
-
         });
 
-        Schema::create('plans_usages', function(Blueprint $table) {
-
+        Schema::create('plans_usages', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('subscription_id');
 
@@ -68,7 +61,6 @@ class Plans extends Migration
             $table->integer('used')->default(0);
 
             $table->timestamps();
-
         });
     }
 

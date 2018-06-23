@@ -2,10 +2,8 @@
 
 namespace Rennokki\Plans\Test;
 
-use Rennokki\Plans\Test\Models\User;
-
-class PlanTest extends TestCase {
-
+class PlanTest extends TestCase
+{
     protected $user;
     protected $plan;
     protected $newPlan;
@@ -204,5 +202,4 @@ class PlanTest extends TestCase {
     {
         $this->assertFalse($this->user->cancelCurrentSubscription());
     }
-
 }

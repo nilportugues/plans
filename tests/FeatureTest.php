@@ -2,12 +2,10 @@
 
 namespace Rennokki\Plans\Test;
 
-use Rennokki\Plans\Test\Models\User;
-
 use Rennokki\Plans\Models\PlanFeatureModel;
 
-class FeatureTest extends TestCase {
-
+class FeatureTest extends TestCase
+{
     protected $user;
     protected $plan;
 
@@ -39,7 +37,6 @@ class FeatureTest extends TestCase {
             ]),
         ]);
 
-
         $this->assertEquals($subscription->features()->count(), 2);
         $this->assertEquals($subscription->usages()->count(), 0);
 
@@ -52,5 +49,4 @@ class FeatureTest extends TestCase {
 
         $this->assertFalse($subscription->consumeFeature('vault.access', 2001));
     }
-
 }

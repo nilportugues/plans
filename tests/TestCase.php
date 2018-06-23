@@ -2,11 +2,10 @@
 
 namespace Rennokki\Plans\Test;
 
-use Orchestra\Testbench\TestCase as Orchestra;
-
+use Rennokki\Plans\Models\PlanModel;
 use Rennokki\Plans\Test\Models\User;
 use Rennokki\Plans\Models\PlanFeatureModel;
-use Rennokki\Plans\Models\PlanModel;
+use Orchestra\Testbench\TestCase as Orchestra;
 use Rennokki\Plans\Models\PlanSubscriptionModel;
 use Rennokki\Plans\Models\PlanSubscriptionUsageModel;
 
@@ -19,7 +18,7 @@ abstract class TestCase extends Orchestra
         $this->resetDatabase();
 
         $this->loadLaravelMigrations(['--database' => 'sqlite']);
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->withFactories(__DIR__.'/../database/factories');
 
         $this->artisan('migrate', ['--database' => 'sqlite']);

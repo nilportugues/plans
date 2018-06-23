@@ -4,7 +4,7 @@ namespace Rennokki\Plans\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-class CancelSubscription
+class FeatureConsumed
 {
     use SerializesModels;
 
