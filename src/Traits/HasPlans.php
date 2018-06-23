@@ -21,10 +21,10 @@ trait HasPlans {
 
     public function lastActiveSubscription()
     {
-        if(!$this->hasSubscriptions())
+        if (!$this->hasSubscriptions())
             return null;
 
-        if($this->hasActiveSubscription())
+        if ($this->hasActiveSubscription())
             return $this->activeSubscription();
 
         return $this->subscriptions()->orderBy('expires_on', 'desc');
@@ -49,7 +49,7 @@ trait HasPlans {
     {
         $subscriptionModel = config('plans.models.subscription');
 
-        if($duration < 1 || $this->hasActiveSubscription())
+        if ($duration < 1 || $this->hasActiveSubscription())
             return false;
 
         $subscription = $this->subscriptions()->save(new $subscriptionModel([
@@ -66,7 +66,7 @@ trait HasPlans {
 
     public function upgradeTo($newPlan, $duration = 30, $startFromNow = true)
     {
-        if(!$this->hasActiveSubscription())
+        if (!$this->hasActiveSubscription())
             return $this->subscribeTo($newPlan, $duration, $startFromNow);
 
         return $this->activeSubscription()->upgradeTo($newPlan, $duration, $startFromNow);
@@ -74,7 +74,7 @@ trait HasPlans {
 
     public function extendCurrentSubscriptionWith($duration = 30, $startFromNow = true)
     {
-        if(!$this->hasActiveSubscription())
+        if (!$this->hasActiveSubscription())
             return $this->subscribeTo(($this->hasSubscriptions()) ? $this->lastActiveSubscription()->plan()->first() : config('plans.models.plan')::first(), $duration);
 
         return $this->activeSubscription()->extendWith($duration, $startFromNow);
@@ -82,7 +82,7 @@ trait HasPlans {
 
     public function cancelCurrentSubscription()
     {
-        if(!$this->hasActiveSubscription())
+        if (!$this->hasActiveSubscription())
             return false;
 
         return $this->activeSubscription()->cancel();

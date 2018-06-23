@@ -41,7 +41,7 @@ class PlanSubscriptionModel extends Model
 
     public function cancel()
     {
-        if($this->isCancelled() || $this->isPendingCancellation())
+        if ($this->isCancelled() || $this->isPendingCancellation())
             return false;
 
         $this->update([
@@ -55,10 +55,10 @@ class PlanSubscriptionModel extends Model
 
     public function extendWith($duration = 30, $startFromNow = true)
     {
-        if($duration < 1)
+        if ($duration < 1)
             return false;
 
-        if($startFromNow)
+        if ($startFromNow)
         {
             $this->update([
                 'expires_on' => Carbon::parse($this->expires_on)->addDays($duration),
@@ -87,7 +87,7 @@ class PlanSubscriptionModel extends Model
     {
         $subscription = $this->extendWith($duration, $startFromNow);
 
-        if($subscription->plan_id != $newPlan->id)
+        if ($subscription->plan_id != $newPlan->id)
         {
             $subscription->update([
                 'plan_id' => $newPlan->id,
@@ -118,7 +118,7 @@ class PlanSubscriptionModel extends Model
 
     public function remainingDays()
     {
-        if($this->hasExpired())
+        if ($this->hasExpired())
             return (int) 0;
 
         return (int) Carbon::now()->diffInDays(Carbon::parse($this->expires_on));
@@ -141,15 +141,15 @@ class PlanSubscriptionModel extends Model
         $usage = $this->usages()->where('code', $featureCode)->first();
         $feature = $this->features()->where('code', $featureCode)->first();
 
-        if($feature && !$usage)
-            if($feature->type == 'limit')
+        if ($feature && !$usage)
+            if ($feature->type == 'limit')
             {
                 $newUsage = $this->usages()->save(new $usageModel([
                     'code' => $featureCode,
                     'used' => 0,
                 ]));
 
-                if($newUsage->used + $amount > $feature->limit)
+                if ($newUsage->used + $amount > $feature->limit)
                     return false;
 
                 return $newUsage->update([
@@ -157,10 +157,10 @@ class PlanSubscriptionModel extends Model
                 ]);
             }
 
-        if(!$feature)
+        if (!$feature)
             return false;
 
-        if($feature->type != 'limit' || $usage->used + $amount > $feature->limit)
+        if ($feature->type != 'limit' || $usage->used + $amount > $feature->limit)
             return false;
 
         return $usage->update([
