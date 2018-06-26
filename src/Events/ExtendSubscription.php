@@ -11,11 +11,13 @@ class ExtendSubscription
     public $subscription;
     public $duration;
     public $startFromNow;
+    public $newSubscription;
 
-    public function __construct($subscription, $duration, $startFromNow)
+    public function __construct($subscription, $duration, $startFromNow, $newSubscription)
     {
         $this->subscription = $subscription;
         $this->duration = $duration;
         $this->startFromNow = $startFromNow;
+        $this->newSubscription = $newSubscription;
     }
 }

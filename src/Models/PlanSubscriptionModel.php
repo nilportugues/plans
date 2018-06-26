@@ -64,7 +64,7 @@ class PlanSubscriptionModel extends Model
                 'expires_on' => Carbon::parse($this->expires_on)->addDays($duration),
             ]);
 
-            event(new \Rennokki\Plans\Events\ExtendSubscription($this, $duration, $startFromNow));
+            event(new \Rennokki\Plans\Events\ExtendSubscription($this, $duration, $startFromNow, null));
 
             return $this;
         }
@@ -78,7 +78,7 @@ class PlanSubscriptionModel extends Model
             'cancelled_on' => null,
         ]);
 
-        event(new \Rennokki\Plans\Events\ExtendSubscription($subscription, $duration, $startFromNow));
+        event(new \Rennokki\Plans\Events\ExtendSubscription($this, $duration, $startFromNow, $subscription));
 
         return $subscription;
     }
@@ -86,6 +86,7 @@ class PlanSubscriptionModel extends Model
     public function upgradeTo($newPlan, $duration = 30, $startFromNow = true)
     {
         $subscription = $this->extendWith($duration, $startFromNow);
+        $oldPlan = $this->plan()->first();
 
         if ($subscription->plan_id != $newPlan->id) {
             $subscription->update([
@@ -95,7 +96,7 @@ class PlanSubscriptionModel extends Model
             $subscription = $this;
         }
 
-        event(new \Rennokki\Plans\Events\UpgradeSubscription($subscription, $duration, $startFromNow));
+        event(new \Rennokki\Plans\Events\UpgradeSubscription($subscription, $duration, $startFromNow, $oldPlan, $newPlan));
 
         return $subscription;
     }
@@ -152,6 +153,8 @@ class PlanSubscriptionModel extends Model
                     return false;
                 }
 
+                event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, ($feature->limit - $newUsage->used)));
+
                 return $newUsage->update([
                     'used' => (int) ($newUsage->used + $amount),
                 ]);
@@ -165,6 +168,8 @@ class PlanSubscriptionModel extends Model
         if ($feature->type != 'limit' || $usage->used + $amount > $feature->limit) {
             return false;
         }
+
+        event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, ($feature->limit - $usage->used)));
 
         return $usage->update([
             'used' => (int) ($usage->used + $amount),
