@@ -11,12 +11,16 @@ trait HasPlans
         return $this->morphMany(config('plans.models.subscription'), 'model');
     }
 
-    public function activeSubscription()
+    public function currentSubscription()
     {
         return $this->subscriptions()
                     ->where('starts_on', '<', Carbon::now())
-                    ->where('expires_on', '>', Carbon::now())
-                    ->first();
+                    ->where('expires_on', '>', Carbon::now());
+    }
+
+    public function activeSubscription()
+    {
+        return $this->currentSubscription()->first();
     }
 
     public function lastActiveSubscription()
@@ -30,11 +34,6 @@ trait HasPlans
         }
 
         return $this->subscriptions()->orderBy('expires_on', 'desc');
-    }
-
-    public function plan()
-    {
-        return ($this->hasActiveSubscription()) ? $this->activeSubscription()->plan() : null;
     }
 
     public function hasSubscriptions()

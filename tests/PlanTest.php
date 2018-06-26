@@ -22,7 +22,6 @@ class PlanTest extends TestCase
         $this->assertNull($this->user->subscriptions()->first());
         $this->assertNull($this->user->activeSubscription());
         $this->assertNull($this->user->lastActiveSubscription());
-        $this->assertNull($this->user->plan());
         $this->assertFalse($this->user->hasActiveSubscription());
     }
 
@@ -41,7 +40,6 @@ class PlanTest extends TestCase
         $this->assertNotNull($this->user->subscriptions()->first());
         $this->assertNotNull($this->user->activeSubscription());
         $this->assertNotNull($this->user->lastActiveSubscription());
-        $this->assertNotNull($this->user->plan());
         $this->assertTrue($this->user->hasActiveSubscription());
         $this->assertEquals($subscription->remainingDays(), 14);
     }
