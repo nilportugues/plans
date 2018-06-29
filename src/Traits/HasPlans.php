@@ -8,7 +8,7 @@ trait HasPlans
 {
     /**
      * Get Subscriptions relatinship.
-     * 
+     *
      * @return morphMany Relatinship.
      */
     public function subscriptions()
@@ -18,7 +18,7 @@ trait HasPlans
 
     /**
      * Return the current subscription relatinship.
-     * 
+     *
      * @return morphMany Relatinship.
      */
     public function currentSubscription()
@@ -30,7 +30,7 @@ trait HasPlans
 
     /**
      * Return the current active subscription.
-     * 
+     *
      * @return PlanSubscriptionModel The PlanSubscription model instance.
      */
     public function activeSubscription()
@@ -40,7 +40,7 @@ trait HasPlans
 
     /**
      * Get the last active subscription.
-     * 
+     *
      * @return null|PlanSubscriptionModel The PlanSubscription model instance.
      */
     public function lastActiveSubscription()
@@ -58,7 +58,7 @@ trait HasPlans
 
     /**
      * Check if the model has subscriptions.
-     * 
+     *
      * @return bool Wether the binded model has subscriptions or not.
      */
     public function hasSubscriptions()
@@ -68,7 +68,7 @@ trait HasPlans
 
     /**
      * Check if the model has an active subscription right now.
-     * 
+     *
      * @return bool Wether the binded model has an active subscription or not.
      */
     public function hasActiveSubscription()
@@ -78,9 +78,9 @@ trait HasPlans
 
     /**
      * Subscribe the binded model to a plan. Returns false if it has an active subscription already.
-     * 
+     *
      * @param PlanModel $plan The Plan model instance.
-     * @param integer $duration The duration, in days, for the subscription.
+     * @param int $duration The duration, in days, for the subscription.
      * @return PlanSubscription The PlanSubscription model instance.
      */
     public function subscribeTo($plan, $duration = 30)
@@ -105,9 +105,9 @@ trait HasPlans
 
     /**
      * Upgrade the binded model's plan. If it is the same plan, it just extends it.
-     * 
+     *
      * @param PlanModel $newPlan The new Plan model instance.
-     * @param integer $duration The duration, in days, for the new subscription.
+     * @param int $duration The duration, in days, for the new subscription.
      * @param bool $startFromNow Wether the subscription will start from now, extending the current plan, or a new subscription will be created to extend the current one.
      * @return PlanSubscription The PlanSubscription model instance with the new plan or the current one, extended.
      */
@@ -122,8 +122,8 @@ trait HasPlans
 
     /**
      * Extend the current subscription with an amount of days.
-     * 
-     * @param integer $duration The duration, in days, for the extension.
+     *
+     * @param int $duration The duration, in days, for the extension.
      * @param bool $startFromNow Wether the subscription will be extended from now, extending to the current plan, or a new subscription will be created to extend the current one.
      * @return PlanSubscription The PlanSubscription model instance of the extended subscription.
      */
@@ -138,7 +138,7 @@ trait HasPlans
 
     /**
      * Cancel the current subscription.
-     * 
+     *
      * @return bool Wether the subscription was cancelled or not.
      */
     public function cancelCurrentSubscription()

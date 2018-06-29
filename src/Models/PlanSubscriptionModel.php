@@ -40,7 +40,7 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Cancel the current subscription.
-     * 
+     *
      * @return bool Wether the subscription was cancelled or not.
      */
     public function cancel()
@@ -60,8 +60,8 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Extend the current subscription with an amount of days.
-     * 
-     * @param integer $duration The duration, in days, for the extension.
+     *
+     * @param int $duration The duration, in days, for the extension.
      * @param bool $startFromNow Wether the subscription will be extended from now, extending to the current plan, or a new subscription will be created to extend the current one.
      * @return PlanSubscription The PlanSubscription model instance of the extended subscription.
      */
@@ -97,9 +97,9 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Upgrade the subscription's plan. If it is the same plan, it just extends it.
-     * 
+     *
      * @param PlanModel $newPlan The new Plan model instance.
-     * @param integer $duration The duration, in days, for the new subscription.
+     * @param int $duration The duration, in days, for the new subscription.
      * @param bool $startFromNow Wether the subscription will start from now, extending the current plan, or a new subscription will be created to extend the current one.
      * @return PlanSubscription The PlanSubscription model instance with the new plan or the current one, extended.
      */
@@ -123,7 +123,7 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Checks if the current subscription has started.
-     * 
+     *
      * @return bool
      */
     public function hasStarted()
@@ -133,7 +133,7 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Checks if the current subscription has expired.
-     * 
+     *
      * @return bool
      */
     public function hasExpired()
@@ -143,7 +143,7 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Checks if the current subscription is active.
-     * 
+     *
      * @return bool
      */
     public function isActive()
@@ -153,8 +153,8 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Get the remaining days in this subscription.
-     * 
-     * @return integer
+     *
+     * @return int
      */
     public function remainingDays()
     {
@@ -166,8 +166,8 @@ class PlanSubscriptionModel extends Model
     }
 
     /**
-     * Checks if the current subscription is cancelled (expiration date is in the past & the subscription is cancelled)
-     * 
+     * Checks if the current subscription is cancelled (expiration date is in the past & the subscription is cancelled).
+     *
      * @return bool
      */
     public function isCancelled()
@@ -177,7 +177,7 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Checks if the current subscription is pending cancellation.
-     * 
+     *
      * @return bool
      */
     public function isPendingCancellation()
@@ -187,9 +187,9 @@ class PlanSubscriptionModel extends Model
 
     /**
      * Consume a feature, if it is 'limit' type.
-     * 
+     *
      * @param string $featureCode The feature code. This feature has to be 'limit' type.
-     * @param integer $amount The amount consumed.
+     * @param int $amount The amount consumed.
      * @return bool Wether the feature was consumed successfully or not.
      */
     public function consumeFeature($featureCode, $amount)
