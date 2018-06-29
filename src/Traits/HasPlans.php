@@ -53,7 +53,7 @@ trait HasPlans
             return $this->activeSubscription();
         }
 
-        return $this->subscriptions()->orderBy('expires_on', 'desc');
+        return $this->subscriptions()->orderBy('expires_on', 'desc')->first();
     }
 
     /**
