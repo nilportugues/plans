@@ -6,7 +6,7 @@
 [![Monthly Downloads](https://poser.pugx.org/rennokki/plans/d/monthly)](https://packagist.org/packages/rennokki/plans)
 [![License](https://poser.pugx.org/rennokki/plans/license)](https://packagist.org/packages/rennokki/plans)
 
-[![Beerpay](https://beerpay.io/rennokki/plans/badge.svg?style=beer-square)](https://beerpay.io/rennokki/plans)  [![Beerpay](https://beerpay.io/rennokki/plans/make-wish.svg?style=flat-square)](https://beerpay.io/rennokki/plans?focus=wish)
+[![PayPal](https://img.shields.io/badge/PayPal-donate-blue.svg)](https://paypal.me/rennokki)
 
 # Laravel Plans
 Laravel Plans is a package for SaaS-like apps that need easy management over plans, features and event-driven updates on plans. If you plan selling your service with subscription, you're in the right place!
