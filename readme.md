@@ -95,8 +95,20 @@ The `consumeFeature()` method will return a `null` if the feature does not exist
 ```php
 if($user->hasActiveSubscription()) {
     $user->activeSubscription()->consumeFeature('build.minutes', 2001); // false
-    $user->activeSubscription()->consumeFeature('build.hours', 1); // null
+    $user->activeSubscription()->consumeFeature('build.hours', 1); // false
     $user->activeSubscription()->consumeFeature('build.minutes', 30); // true
+}
+```
+
+Alternatively, you can also un-consume features. This is a reverting method:
+```php
+if($user->hasActiveSubscription()) {
+    $user->activeSubscription()->consumeFeature('build.minutes', 30); // true
+
+    $user->activeSubscription()->unconsumeFeature('build.hours', 1); // false
+    $user->activeSubscription()->unconsumeFeature('build.minutes', 30); // true
+
+    // Now, the amount used for that feature is 0, the remaining part is 2000.
 }
 ```
 
@@ -211,6 +223,12 @@ $listen = [
         // $event->subscription = The current subscription.
         // $event->feature = The feature that was used.
         // $event->used = The amount used.
+        // $event->remaining = The total amount remaining.
+    ],
+     \Rennokki\Plans\Events\FeatureUnconsumed::class => [
+        // $event->subscription = The current subscription.
+        // $event->feature = The feature that was used.
+        // $event->used = The amount reverted.
         // $event->remaining = The total amount remaining.
     ],
 ];

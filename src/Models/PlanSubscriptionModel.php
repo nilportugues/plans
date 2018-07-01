@@ -210,7 +210,9 @@ class PlanSubscriptionModel extends Model
                     return false;
                 }
 
-                event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, ($feature->limit - $newUsage->used)));
+                $remaining = $feature->limit - ($newUsage->used + $amount);
+
+                event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, $remaining));
 
                 return $newUsage->update([
                     'used' => (int) ($newUsage->used + $amount),
@@ -226,10 +228,53 @@ class PlanSubscriptionModel extends Model
             return false;
         }
 
-        event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, ($feature->limit - $usage->used)));
+        $remaining = $feature->limit - ($usage->used + $amount);
+
+        event(new \Rennokki\Plans\Events\FeatureConsumed($this, $feature, $amount, $remaining));
 
         return $usage->update([
             'used' => (int) ($usage->used + $amount),
+        ]);
+    }
+
+    /**
+     * Reverse of the consume a feature method, if it is 'limit' type.
+     *
+     * @param string $featureCode The feature code. This feature has to be 'limit' type.
+     * @param int $amount The amount consumed.
+     * @return bool Wether the feature was consumed successfully or not.
+     */
+    public function unconsumeFeature($featureCode, $amount)
+    {
+        $usageModel = config('plans.models.usage');
+
+        $usage = $this->usages()->where('code', $featureCode)->first();
+        $feature = $this->features()->where('code', $featureCode)->first();
+
+        if ($feature && ! $usage) {
+            if ($feature->type == 'limit') {
+                $newUsage = $this->usages()->save(new $usageModel([
+                    'code' => $featureCode,
+                    'used' => 0,
+                ]));
+
+                event(new \Rennokki\Plans\Events\FeatureUnconsumed($this, $feature, $amount, $feature->limit));
+
+                return true;
+            }
+        }
+
+        if (! $feature || $feature->type != 'limit') {
+            return false;
+        }
+
+        $used = $usage->used - $amount;
+        $remaining = ($used > 0) ? $feature->limit - $used : $feature->limit;
+
+        event(new \Rennokki\Plans\Events\FeatureUnconsumed($this, $feature, $amount, $remaining));
+
+        return $usage->update([
+            'used' => (int) $used,
         ]);
     }
 }
